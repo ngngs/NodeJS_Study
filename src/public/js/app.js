@@ -1,5 +1,20 @@
 const socket = io();
 
+const canvas = document.getElementById("cursor-layer");
+const ctx = canvas.getContext("2d");
+document.addEventListener("mousemove", (event) => {
+    var x = event.clientX;
+    var y = event.clientY;
+    socket.emit("cursor-position", { x: x, y: y });
+});
+socket.on("cursor-position", (data) => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.arc(data.x, data.y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+});
+
+
 const welcome = document.getElementById("welcome")
 const form = welcome.querySelector("form");
 const room = document.getElementById("room");

@@ -11,9 +11,9 @@ app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/"));
 
 const httpServer = http.createServer(app);
-const wsServer = new Server(httpServer);
+const io = new Server(httpServer);
 
-wsServer.on("connection", (socket) => {
+io.on("connection", (socket) => {
     socket.onAny((event) => {
         console.log(`Socket Event:${event}`);
     });
@@ -22,6 +22,10 @@ wsServer.on("connection", (socket) => {
         done();
         socket.to(roomName).emit("welcome");
     });
+    socket.on('cursor-position', (data) => {
+        console.log(data);
+        io.emit('cursor-position', data);
+    })
 });
 
 const handleListen = () => console.log("Listenning on http://localhost:3000/");
